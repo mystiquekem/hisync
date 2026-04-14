@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "986167380653",
+    "project_id": "music-club-management",
+    "storage_bucket": "music-club-management.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986167380653:android:2e89c1423a4bd35eff5424",
+        "android_client_info": {
+          "package_name": "com.example.hisync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVNyXcr17mfZqpDE6b2-vPT0V143dWV7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

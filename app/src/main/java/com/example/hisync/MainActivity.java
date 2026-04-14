@@ -1,46 +1,65 @@
 package com.example.hisync;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-//CAC HAM CHINH
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        // Populate header
+        TextView tvAvatar   = findViewById(R.id.tvAvatar);
+        TextView tvUserName = findViewById(R.id.tvUserName);
+        TextView tvUserEmail = findViewById(R.id.tvUserEmail);
+
+        String email = user.getEmail() != null ? user.getEmail() : "User";
+        String displayName = user.getDisplayName();
+
+        if (displayName != null && !displayName.isEmpty()) {
+            tvUserName.setText(displayName);
+            tvAvatar.setText(String.valueOf(displayName.charAt(0)).toUpperCase());
+        } else {
+            tvUserName.setText(email.split("@")[0]);
+            tvAvatar.setText(String.valueOf(email.charAt(0)).toUpperCase());
+        }
+        tvUserEmail.setText(email);
+
+        // Sign out
+        MaterialButton btnSignOut = findViewById(R.id.btnSignOut);
+        btnSignOut.setOnClickListener(v -> {
+            auth.signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
+
+        // Bottom navigation (stub — expand per screen later)
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            // Add fragment transactions here as you build each screen
+            return true;
         });
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
 }

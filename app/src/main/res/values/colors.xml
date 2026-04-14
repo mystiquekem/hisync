@@ -2,4 +2,25 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Background -->
+    <color name="bg_primary">#0D0D12</color>
+    <color name="bg_surface">#13131C</color>
+    <color name="bg_field">#16161F</color>
+
+    <!-- Brand -->
+    <color name="purple_primary">#6C63FF</color>
+    <color name="purple_dark">#4C46C4</color>
+    <color name="purple_50">#EEEDFE</color>
+    <color name="purple_800">#3C3489</color>
+
+    <!-- Text -->
+    <color name="text_primary">#EEEDF8</color>
+    <color name="text_secondary">#BBBACF</color>
+    <color name="text_tertiary">#6E6E8A</color>
+
+    <!-- UI -->
+    <color name="divider">#2E2E45</color>
+    <color name="amber">#EF9F27</color>
+    <color name="green_accent">#1D9E75</color>
 </resources>

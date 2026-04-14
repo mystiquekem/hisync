@@ -12,7 +12,12 @@
           "package_name": "com.example.hisync"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "986167380653-n9f0lprcu9uomib7njc5ocjjlh5lauh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCVNyXcr17mfZqpDE6b2-vPT0V143dWV7c"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986167380653-n9f0lprcu9uomib7njc5ocjjlh5lauh5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

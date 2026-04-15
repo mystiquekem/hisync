@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            // Add fragment transactions here as you build each screen
+            if (id == R.id.nav_schedule) {
+                startActivity(new Intent(this, ScheduleActivity.class));
+                return true;
+            }
             return true;
         });
     }

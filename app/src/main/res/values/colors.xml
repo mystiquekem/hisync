@@ -3,24 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Background -->
-    <color name="bg_primary">#0D0D12</color>
-    <color name="bg_surface">#13131C</color>
-    <color name="bg_field">#16161F</color>
+    <color name="bg_primary">#0D0F12</color>
+    <color name="bg_surface">#13181C</color>
+    <color name="bg_field">#171D22</color>
 
-    <!-- Brand -->
-    <color name="purple_primary">#6C63FF</color>
-    <color name="purple_dark">#4C46C4</color>
-    <color name="purple_50">#EEEDFE</color>
-    <color name="purple_800">#3C3489</color>
+    <color name="purple_primary">#EF4B3C</color> <color name="purple_dark">#C4382C</color>    <color name="purple_50">#FDF1E3</color>      <color name="purple_800">#2D5A61</color>     <color name="text_primary">#FDF1E3</color>   <color name="text_secondary">#B5C3C5</color> <color name="text_tertiary">#647A7D</color>
 
-    <!-- Text -->
-    <color name="text_primary">#EEEDF8</color>
-    <color name="text_secondary">#BBBACF</color>
-    <color name="text_tertiary">#6E6E8A</color>
-
-    <!-- UI -->
-    <color name="divider">#2E2E45</color>
+    <color name="divider">#2E3E45</color>
     <color name="amber">#EF9F27</color>
-    <color name="green_accent">#1D9E75</color>
-</resources>
+    <color name="green_accent">#64B5C3</color>   </resources>

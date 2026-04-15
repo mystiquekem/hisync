@@ -12,6 +12,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
@@ -58,12 +62,24 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register(String email, String password) {
         btnRegister.setEnabled(false);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     btnRegister.setEnabled(true);
                     if (task.isSuccessful()) {
-                        startActivity(new Intent(this, MainActivity.class));
-                        finishAffinity();
+                        String uid = task.getResult().getUser().getUid();
+                        // Write user doc so schedule can look up names
+                        Map<String, Object> userDoc = new HashMap<>();
+                        userDoc.put("displayName", email.split("@")[0]);
+                        userDoc.put("email", email);
+                        userDoc.put("role", "member"); // default role
+
+                        db.collection("users").document(uid).set(userDoc)
+                                .addOnCompleteListener(dbTask -> {
+                                    startActivity(new Intent(this, MainActivity.class));
+                                    finishAffinity();
+                                });
                     } else {
                         tilEmail.setError(task.getException() != null
                                 ? task.getException().getMessage() : "Registration failed");

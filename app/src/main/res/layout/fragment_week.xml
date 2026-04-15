@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary">
+
+    <!-- Month label -->
+    <TextView
+        android:id="@+id/tvMonthLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"/>
+
+    <!-- Day header row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView android:id="@+id/tvMon"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvTue"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvWed"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvThu"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvFri"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvSat"
+            style="@style/DayHeader" android:layout_weight="1"/>
+        <TextView android:id="@+id/tvSun"
+            style="@style/DayHeader" android:layout_weight="1"/>
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider"
+        android:layout_marginHorizontal="8dp"/>
+
+    <!-- Day columns (sessions go here) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:paddingTop="8dp">
+
+        <LinearLayout android:id="@+id/colMon"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colTue"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colWed"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colThu"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colFri"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colSat"
+            style="@style/DayColumn" android:layout_weight="1"/>
+        <LinearLayout android:id="@+id/colSun"
+            style="@style/DayColumn" android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

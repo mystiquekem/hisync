@@ -48,6 +48,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-firestore")
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")

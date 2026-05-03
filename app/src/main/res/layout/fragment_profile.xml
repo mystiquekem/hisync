@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    android:background="@color/bg_primary">
+
+    <Space android:layout_width="wrap_content" android:layout_height="40dp"/>
+
+    <TextView
+        android:id="@+id/tvProfileAvatar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_avatar"
+        android:text="?"/>
+
+    <TextView
+        android:id="@+id/tvProfileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tvProfileEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/text_tertiary"
+        android:layout_marginTop="4dp"/>
+
+    <Space android:layout_width="wrap_content" android:layout_height="40dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnProfileSignOut"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Sign Out"
+        android:textColor="@color/purple_primary"
+        app:strokeColor="@color/purple_primary"
+        app:cornerRadius="10dp"/>
+
+</LinearLayout>

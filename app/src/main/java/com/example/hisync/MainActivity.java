@@ -2,67 +2,153 @@ package com.example.hisync;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.hisync.fragments.HomeFragment;
+import com.example.hisync.fragments.ProfileFragment;
+import com.example.hisync.fragments.ScheduleFragment;
+import com.example.hisync.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth;
+    private ViewPager2 viewPager;
+    private BottomNavigationView bottomNav;
+
+    // Maps nav item IDs to pager positions
+    private static final int POS_HOME     = 0;
+    private static final int POS_SCHEDULE = 1;
+    private static final int POS_TASKS    = 2;
+    private static final int POS_PROFILE  = 3;
+
+    // Back stack: keeps track of visited tab positions
+    private final Deque<Integer> backStack = new ArrayDeque<>();
+    private int currentPosition = POS_HOME;
+    private boolean isNavigatingProgrammatically = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-
+        // Redirect to login if not authenticated
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // Populate header
-        TextView tvAvatar   = findViewById(R.id.tvAvatar);
-        TextView tvUserName = findViewById(R.id.tvUserName);
-        TextView tvUserEmail = findViewById(R.id.tvUserEmail);
+        setContentView(R.layout.activity_main);
 
-        String email = user.getEmail() != null ? user.getEmail() : "User";
-        String displayName = user.getDisplayName();
+        viewPager = findViewById(R.id.viewPager);
+        bottomNav = findViewById(R.id.bottomNav);
 
-        if (displayName != null && !displayName.isEmpty()) {
-            tvUserName.setText(displayName);
-            tvAvatar.setText(String.valueOf(displayName.charAt(0)).toUpperCase());
-        } else {
-            tvUserName.setText(email.split("@")[0]);
-            tvAvatar.setText(String.valueOf(email.charAt(0)).toUpperCase());
-        }
-        tvUserEmail.setText(email);
+        // Set up pager adapter
+        viewPager.setAdapter(new MainPagerAdapter(this));
+        viewPager.setOffscreenPageLimit(3); // Keep all fragments alive
+        viewPager.setUserInputEnabled(true); // Allow swipe
 
-        // Sign out
-        MaterialButton btnSignOut = findViewById(R.id.btnSignOut);
-        btnSignOut.setOnClickListener(v -> {
-            auth.signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        });
-
-        // Bottom navigation (stub — expand per screen later)
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        // Sync bottom nav → pager
         bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_schedule) {
-                startActivity(new Intent(this, ScheduleActivity.class));
-                return true;
-            }
+            int pos = positionForId(item.getItemId());
+            if (pos == currentPosition) return true; // already there
+            navigateTo(pos);
             return true;
         });
+
+        // Sync pager swipe → bottom nav
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (!isNavigatingProgrammatically) {
+                    pushBackStack(currentPosition);
+                    currentPosition = position;
+                }
+                // Update bottom nav without triggering its listener
+                bottomNav.setOnItemSelectedListener(null);
+                bottomNav.setSelectedItemId(idForPosition(position));
+                bottomNav.setOnItemSelectedListener(item -> {
+                    int pos = positionForId(item.getItemId());
+                    if (pos == currentPosition) return true;
+                    navigateTo(pos);
+                    return true;
+                });
+            }
+        });
+
+        // Back button: pop back stack instead of finishing
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (!backStack.isEmpty()) {
+                    int prev = backStack.pop();
+                    isNavigatingProgrammatically = true;
+                    currentPosition = prev;
+                    viewPager.setCurrentItem(prev, true);
+                    isNavigatingProgrammatically = false;
+                } else {
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void navigateTo(int position) {
+        pushBackStack(currentPosition);
+        currentPosition = position;
+        isNavigatingProgrammatically = true;
+        viewPager.setCurrentItem(position, true);
+        isNavigatingProgrammatically = false;
+    }
+
+    private void pushBackStack(int position) {
+        // Don't push duplicates on top
+        if (!backStack.isEmpty() && backStack.peek() == position) return;
+        backStack.push(position);
+    }
+
+    private int positionForId(int id) {
+        if (id == R.id.nav_schedule) return POS_SCHEDULE;
+        if (id == R.id.nav_tasks)    return POS_TASKS;
+        if (id == R.id.nav_profile)  return POS_PROFILE;
+        return POS_HOME;
+    }
+
+    private int idForPosition(int pos) {
+        if (pos == POS_SCHEDULE) return R.id.nav_schedule;
+        if (pos == POS_TASKS)    return R.id.nav_tasks;
+        if (pos == POS_PROFILE)  return R.id.nav_profile;
+        return R.id.nav_home;
+    }
+
+    // ── Pager Adapter ─────────────────────────────────────────────────────────
+
+    private static class MainPagerAdapter extends FragmentStateAdapter {
+        MainPagerAdapter(AppCompatActivity activity) { super(activity); }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            switch (position) {
+                case POS_SCHEDULE: return new ScheduleFragment();
+                case POS_TASKS:    return new TasksFragment();
+                case POS_PROFILE:  return new ProfileFragment();
+                default:           return new HomeFragment();
+            }
+        }
+
+        @Override
+        public int getItemCount() { return 4; }
     }
 }

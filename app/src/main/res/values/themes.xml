@@ -1,9 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.Hisync" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/bg_primary</item>
+        <item name="android:navigationBarColor">@color/bg_surface</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     </style>
+
+    <style name="Theme.Hisync" parent="Base.Theme.Hisync" />
 
     <style name="DayHeader">
         <item name="android:layout_width">0dp</item>
@@ -22,5 +25,8 @@
         <item name="android:paddingEnd">2dp</item>
     </style>
 
-    <style name="Theme.Hisync" parent="Base.Theme.Hisync" />
+    <style name="NavTextStyle">
+        <item name="android:textSize">10sp</item>
+    </style>
+
 </resources>

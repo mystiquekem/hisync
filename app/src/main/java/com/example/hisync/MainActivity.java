@@ -1,6 +1,7 @@
 package com.example.hisync;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -15,8 +16,6 @@ import com.example.hisync.fragments.ProfileFragment;
 import com.example.hisync.fragments.ScheduleFragment;
 import com.example.hisync.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -26,13 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNav;
 
-    // Maps nav item IDs to pager positions
     private static final int POS_HOME     = 0;
     private static final int POS_SCHEDULE = 1;
     private static final int POS_TASKS    = 2;
     private static final int POS_PROFILE  = 3;
 
-    // Back stack: keeps track of visited tab positions
     private final Deque<Integer> backStack = new ArrayDeque<>();
     private int currentPosition = POS_HOME;
     private boolean isNavigatingProgrammatically = false;
@@ -41,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Redirect to login if not authenticated
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        // Kiểm tra session — thay FirebaseUser bằng SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
+        if (prefs.getLong("userId", -1) == -1) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -54,20 +51,17 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         bottomNav = findViewById(R.id.bottomNav);
 
-        // Set up pager adapter
         viewPager.setAdapter(new MainPagerAdapter(this));
-        viewPager.setOffscreenPageLimit(3); // Keep all fragments alive
-        viewPager.setUserInputEnabled(true); // Allow swipe
+        viewPager.setOffscreenPageLimit(3);
+        viewPager.setUserInputEnabled(true);
 
-        // Sync bottom nav → pager
         bottomNav.setOnItemSelectedListener(item -> {
             int pos = positionForId(item.getItemId());
-            if (pos == currentPosition) return true; // already there
+            if (pos == currentPosition) return true;
             navigateTo(pos);
             return true;
         });
 
-        // Sync pager swipe → bottom nav
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -75,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                     pushBackStack(currentPosition);
                     currentPosition = position;
                 }
-                // Update bottom nav without triggering its listener
                 bottomNav.setOnItemSelectedListener(null);
                 bottomNav.setSelectedItemId(idForPosition(position));
                 bottomNav.setOnItemSelectedListener(item -> {
@@ -87,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Back button: pop back stack instead of finishing
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -104,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /** Gọi từ ProfileFragment hoặc HomeFragment khi user sign out */
+    public void signOut() {
+        getSharedPreferences("hisync", MODE_PRIVATE).edit().clear().apply();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
     private void navigateTo(int position) {
         pushBackStack(currentPosition);
         currentPosition = position;
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pushBackStack(int position) {
-        // Don't push duplicates on top
         if (!backStack.isEmpty() && backStack.peek() == position) return;
         backStack.push(position);
     }
@@ -131,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
         if (pos == POS_PROFILE)  return R.id.nav_profile;
         return R.id.nav_home;
     }
-
-    // ── Pager Adapter ─────────────────────────────────────────────────────────
 
     private static class MainPagerAdapter extends FragmentStateAdapter {
         MainPagerAdapter(AppCompatActivity activity) { super(activity); }

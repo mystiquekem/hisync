@@ -11,21 +11,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.hisync.R;
+import com.example.hisync.api.RetrofitClient;
+import com.example.hisync.dto.SessionResponse;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SessionDetailBottomSheet extends BottomSheetDialogFragment {
 
-    private static final String ARG_SESSION_ID = "session_id";
-    private static final String ARG_SONG_TITLE = "song_title";
+    private static final String ARG_SESSION_ID  = "session_id";
+    private static final String ARG_SONG_TITLE  = "song_title";
 
-    private FirebaseFirestore db;
-
-    public static SessionDetailBottomSheet newInstance(String sessionId, String songTitle) {
+    public static SessionDetailBottomSheet newInstance(long sessionId, String songTitle) {
         SessionDetailBottomSheet sheet = new SessionDetailBottomSheet();
         Bundle args = new Bundle();
-        args.putString(ARG_SESSION_ID, sessionId);
+        args.putLong(ARG_SESSION_ID, sessionId);
         args.putString(ARG_SONG_TITLE, songTitle);
         sheet.setArguments(args);
         return sheet;
@@ -43,46 +45,45 @@ public class SessionDetailBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        db = FirebaseFirestore.getInstance();
-        String sessionId = requireArguments().getString(ARG_SESSION_ID);
+        long sessionId   = requireArguments().getLong(ARG_SESSION_ID);
         String songTitle = requireArguments().getString(ARG_SONG_TITLE);
 
-        TextView tvTitle = view.findViewById(R.id.tvSheetTitle);
-        tvTitle.setText(songTitle);
+        ((TextView) view.findViewById(R.id.tvSheetTitle)).setText(songTitle);
 
         LinearLayout layoutMembers = view.findViewById(R.id.layoutSheetMembers);
         LinearLayout layoutTasks   = view.findViewById(R.id.layoutSheetTasks);
 
-        // Load members
-        db.collection("sessions").document(sessionId)
-                .collection("members")
-                .get()
-                .addOnSuccessListener(snaps -> {
-                    layoutMembers.removeAllViews();
-                    for (QueryDocumentSnapshot doc : snaps) {
-                        String instrument = doc.getString("instrument");
-                        String userId = doc.getId();
+        RetrofitClient.getInstance().getApi()
+                .getSession(sessionId)
+                .enqueue(new Callback<SessionResponse>() {
+                    @Override
+                    public void onResponse(Call<SessionResponse> call,
+                                           Response<SessionResponse> response) {
+                        if (!isAdded() || response.body() == null) return;
+                        SessionResponse session = response.body();
 
-                        // Fetch display name from users collection
-                        db.collection("users").document(userId).get()
-                                .addOnSuccessListener(userDoc -> {
-                                    String name = userDoc.getString("displayName");
-                                    if (name == null) name = userId;
-                                    addMemberRow(layoutMembers, instrument != null ? instrument : "?", name);
-                                });
+                        // Members
+                        if (session.getMembers() != null) {
+                            for (SessionResponse.MemberResponse m : session.getMembers()) {
+                                addMemberRow(layoutMembers,
+                                        m.getInstrument() != null ? m.getInstrument() : "?",
+                                        m.getDisplayName() != null ? m.getDisplayName() : "Unknown");
+                            }
+                        }
+
+                        // Tasks
+                        if (session.getTasks() != null) {
+                            for (com.example.hisync.dto.TaskResponse t : session.getTasks()) {
+                                addTaskRow(layoutTasks,
+                                        t.getTitle() != null ? t.getTitle() : "Task",
+                                        t.getStatus());
+                            }
+                        }
                     }
-                });
 
-        // Load tasks
-        db.collection("tasks")
-                .whereEqualTo("sessionId", sessionId)
-                .get()
-                .addOnSuccessListener(snaps -> {
-                    layoutTasks.removeAllViews();
-                    for (QueryDocumentSnapshot doc : snaps) {
-                        String title  = doc.getString("title");
-                        String status = doc.getString("status");
-                        addTaskRow(layoutTasks, title != null ? title : "Task", status);
+                    @Override
+                    public void onFailure(Call<SessionResponse> call, Throwable t) {
+                        // Bottom sheet vẫn mở, chỉ không có data
                     }
                 });
     }
@@ -101,15 +102,10 @@ public class SessionDetailBottomSheet extends BottomSheetDialogFragment {
         View row = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_task_row, parent, false);
         ((TextView) row.findViewById(R.id.tvTaskTitle)).setText(title);
-
         View dot = row.findViewById(R.id.viewTaskDot);
-        if ("done".equals(status)) {
-            dot.setBackgroundResource(R.drawable.dot_green);
-        } else if ("rerecord".equals(status)) {
-            dot.setBackgroundResource(R.drawable.dot_amber);
-        } else {
-            dot.setBackgroundResource(R.drawable.dot_purple);
-        }
+        if ("done".equals(status))         dot.setBackgroundResource(R.drawable.dot_green);
+        else if ("rerecord".equals(status)) dot.setBackgroundResource(R.drawable.dot_amber);
+        else                               dot.setBackgroundResource(R.drawable.dot_purple);
         parent.addView(row);
     }
 }

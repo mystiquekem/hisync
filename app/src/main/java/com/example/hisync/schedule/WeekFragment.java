@@ -1,5 +1,6 @@
 package com.example.hisync.schedule;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,36 +10,33 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.hisync.R;
-import com.example.hisync.model.Session;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.hisync.api.RetrofitClient;
+import com.example.hisync.dto.SessionResponse;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WeekFragment extends Fragment {
 
     private static final String ARG_WEEK_START = "week_start";
-    private static final DateTimeFormatter DAY_FMT = DateTimeFormatter.ofPattern("EEE\nd");
-    private static final DateTimeFormatter LABEL_FMT = DateTimeFormatter.ofPattern("MMMM yyyy");
+    private static final DateTimeFormatter DAY_FMT   = DateTimeFormatter.ofPattern("EEE\nd");
+    private static final DateTimeFormatter LABEL_FMT  = DateTimeFormatter.ofPattern("MMMM yyyy");
+    private static final DateTimeFormatter API_FMT    = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private LocalDate weekStart;
-    private FirebaseFirestore db;
-    private String currentUid;
+    private long currentUserId;
 
-    // day column views: index 0=Mon … 6=Sun
-    private final TextView[] dayHeaders = new TextView[7];
+    private final TextView[]     dayHeaders = new TextView[7];
     private final LinearLayout[] dayColumns = new LinearLayout[7];
 
     public static WeekFragment newInstance(String weekStartIso) {
@@ -53,9 +51,9 @@ public class WeekFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weekStart = LocalDate.parse(requireArguments().getString(ARG_WEEK_START));
-        db = FirebaseFirestore.getInstance();
-        currentUid = FirebaseAuth.getInstance().getCurrentUser() != null
-                ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "";
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE);
+        currentUserId = prefs.getLong("userId", -1);
     }
 
     @Nullable
@@ -70,24 +68,20 @@ public class WeekFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Month label
         TextView tvMonth = view.findViewById(R.id.tvMonthLabel);
         tvMonth.setText(weekStart.format(LABEL_FMT));
 
-        // Wire up day columns
         int[] headerIds = {R.id.tvMon, R.id.tvTue, R.id.tvWed,
                 R.id.tvThu, R.id.tvFri, R.id.tvSat, R.id.tvSun};
-        int[] colIds = {R.id.colMon, R.id.colTue, R.id.colWed,
+        int[] colIds    = {R.id.colMon, R.id.colTue, R.id.colWed,
                 R.id.colThu, R.id.colFri, R.id.colSat, R.id.colSun};
 
         LocalDate today = LocalDate.now();
         for (int i = 0; i < 7; i++) {
             dayHeaders[i] = view.findViewById(headerIds[i]);
             dayColumns[i] = view.findViewById(colIds[i]);
-
             LocalDate day = weekStart.plusDays(i);
             dayHeaders[i].setText(day.format(DAY_FMT));
-
             if (day.equals(today)) {
                 dayHeaders[i].setBackgroundResource(R.drawable.bg_day_today);
                 dayHeaders[i].setTextColor(requireContext().getColor(R.color.white));
@@ -97,44 +91,44 @@ public class WeekFragment extends Fragment {
             }
         }
 
-        loadSessions(view);
+        loadSessions();
     }
 
-    private void loadSessions(View view) {
-        // Convert week range to Timestamps
-        Date from = Date.from(weekStart.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date to = Date.from(weekStart.plusDays(7).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    private void loadSessions() {
+        if (currentUserId == -1) return;
 
-        // Query sessions where the current user is a member
-        db.collection("sessions")
-                .whereGreaterThanOrEqualTo("date", new com.google.firebase.Timestamp(from))
-                .whereLessThan("date", new com.google.firebase.Timestamp(to))
-                .get()
-                .addOnSuccessListener(sessionSnaps -> {
-                    List<Session> sessions = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : sessionSnaps) {
-                        // Filter: only show sessions the user is a member of
-                        db.collection("sessions")
-                                .document(doc.getId())
-                                .collection("members")
-                                .document(currentUid)
-                                .get()
-                                .addOnSuccessListener(memberSnap -> {
-                                    if (memberSnap.exists()) {
-                                        Session s = doc.toObject(Session.class);
-                                        s.id = doc.getId();
-                                        if (isAdded()) placeSessionCard(s, view);
-                                    }
-                                });
+        String from = weekStart.atStartOfDay().format(API_FMT);
+        String to   = weekStart.plusDays(7).atStartOfDay().format(API_FMT);
+
+        RetrofitClient.getInstance().getApi()
+                .getSessions(currentUserId, from, to)
+                .enqueue(new Callback<List<SessionResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<SessionResponse>> call,
+                                           Response<List<SessionResponse>> response) {
+                        if (!isAdded() || response.body() == null) return;
+                        for (SessionResponse session : response.body()) {
+                            placeSessionCard(session);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<SessionResponse>> call, Throwable t) {
+                        // Silently fail — tuần khác vẫn load bình thường
                     }
                 });
     }
 
-    private void placeSessionCard(Session session, View rootView) {
-        if (session.date == null) return;
+    private void placeSessionCard(SessionResponse session) {
+        if (session.getDate() == null) return;
 
-        LocalDate sessionDate = session.date.toDate()
-                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        // Parse ISO date string từ backend
+        LocalDate sessionDate;
+        try {
+            sessionDate = LocalDate.parse(session.getDate().substring(0, 10));
+        } catch (Exception e) {
+            return;
+        }
 
         int dayIndex = sessionDate.getDayOfWeek().getValue() - 1; // Mon=0
         if (dayIndex < 0 || dayIndex > 6) return;
@@ -144,16 +138,12 @@ public class WeekFragment extends Fragment {
 
         View card = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_session_chip, col, false);
-
-        TextView tvTitle = card.findViewById(R.id.tvChipTitle);
-        tvTitle.setText(session.songTitle);
-
+        ((TextView) card.findViewById(R.id.tvChipTitle)).setText(session.getSongTitle());
         card.setOnClickListener(v -> {
             SessionDetailBottomSheet sheet =
-                    SessionDetailBottomSheet.newInstance(session.id, session.songTitle);
+                    SessionDetailBottomSheet.newInstance(session.getId(), session.getSongTitle());
             sheet.show(getParentFragmentManager(), "session_detail");
         });
-
         col.addView(card);
     }
 }

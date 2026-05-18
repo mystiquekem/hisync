@@ -1,5 +1,6 @@
 package com.example.hisync.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +10,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hisync.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.hisync.api.RetrofitClient;
+import com.example.hisync.dto.TaskResponse;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TasksFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefresh;
     private LinearLayout layoutPending, layoutDone;
-    private FirebaseFirestore db;
-    private FirebaseUser user;
+    private long userId;
 
     @Nullable
     @Override
@@ -37,8 +42,9 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        db   = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE);
+        userId = prefs.getLong("userId", -1);
 
         swipeRefresh  = view.findViewById(R.id.swipeRefreshTasks);
         layoutPending = view.findViewById(R.id.layoutPendingTasks);
@@ -52,38 +58,41 @@ public class TasksFragment extends Fragment {
     }
 
     private void loadTasks() {
-        if (user == null) return;
-        db.collection("tasks")
-                .whereEqualTo("assignedTo", user.getUid())
-                .get()
-                .addOnSuccessListener(snaps -> {
-                    if (!isAdded()) return;
-                    layoutPending.removeAllViews();
-                    layoutDone.removeAllViews();
+        if (userId == -1) return;
+        RetrofitClient.getInstance().getApi()
+                .getTasks(userId)
+                .enqueue(new Callback<List<TaskResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<TaskResponse>> call,
+                                           Response<List<TaskResponse>> response) {
+                        if (!isAdded()) return;
+                        layoutPending.removeAllViews();
+                        layoutDone.removeAllViews();
+                        swipeRefresh.setRefreshing(false);
+                        if (response.body() == null) return;
 
-                    for (QueryDocumentSnapshot doc : snaps) {
-                        String title   = doc.getString("title");
-                        String status  = doc.getString("status");
-                        String session = doc.getString("sessionId");
-                        boolean isDone = "done".equals(status);
-
-                        View row = LayoutInflater.from(requireContext())
-                                .inflate(R.layout.item_task_row, isDone ? layoutDone : layoutPending, false);
-                        ((TextView) row.findViewById(R.id.tvTaskTitle))
-                                .setText(title != null ? title : "Task");
-
-                        View dot = row.findViewById(R.id.viewTaskDot);
-                        if (isDone)                    dot.setBackgroundResource(R.drawable.dot_green);
-                        else if ("rerecord".equals(status)) dot.setBackgroundResource(R.drawable.dot_amber);
-                        else                           dot.setBackgroundResource(R.drawable.dot_purple);
-
-                        if (isDone) layoutDone.addView(row);
-                        else        layoutPending.addView(row);
+                        for (TaskResponse task : response.body()) {
+                            boolean isDone = "done".equals(task.getStatus());
+                            LinearLayout target = isDone ? layoutDone : layoutPending;
+                            View row = LayoutInflater.from(requireContext())
+                                    .inflate(R.layout.item_task_row, target, false);
+                            ((TextView) row.findViewById(R.id.tvTaskTitle))
+                                    .setText(task.getTitle() != null ? task.getTitle() : "Task");
+                            View dot = row.findViewById(R.id.viewTaskDot);
+                            if (isDone)
+                                dot.setBackgroundResource(R.drawable.dot_green);
+                            else if ("rerecord".equals(task.getStatus()))
+                                dot.setBackgroundResource(R.drawable.dot_amber);
+                            else
+                                dot.setBackgroundResource(R.drawable.dot_purple);
+                            target.addView(row);
+                        }
                     }
-                    swipeRefresh.setRefreshing(false);
-                })
-                .addOnFailureListener(e -> {
-                    if (isAdded()) swipeRefresh.setRefreshing(false);
+
+                    @Override
+                    public void onFailure(Call<List<TaskResponse>> call, Throwable t) {
+                        if (isAdded()) swipeRefresh.setRefreshing(false);
+                    }
                 });
     }
 }

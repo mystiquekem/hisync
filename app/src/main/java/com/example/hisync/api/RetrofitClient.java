@@ -1,5 +1,7 @@
 package com.example.hisync.api;
 
+import com.example.hisync.BuildConfig;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -7,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "http://192.168.2.10:8080/api/";
     private static RetrofitClient instance;
     private final HisyncApi api;
 
@@ -20,7 +21,7 @@ public class RetrofitClient {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BuildConfig.SERVER_URL) // ← dùng BuildConfig
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

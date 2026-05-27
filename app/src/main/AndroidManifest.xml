@@ -16,13 +16,19 @@
         android:theme="@style/Theme.Hisync">
 
         <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Hisync">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".OnboardingActivity" android:exported="false"/>
+
+        <!-- LoginActivity: xóa intent-filter cũ -->
+        <activity android:name=".LoginActivity" android:exported="false"/>
 
         <activity
             android:name=".MainActivity"

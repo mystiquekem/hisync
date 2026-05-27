@@ -1,7 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
-    // ĐÃ XÓA: alias(libs.plugins.google.gms.google.services)
 }
+
+// Đọc local.properties
+val localProps = Properties()
+val localFile = rootProject.file("local.properties")
+if (localFile.exists()) localProps.load(localFile.inputStream())
 
 android {
     namespace = "com.example.hisync"
@@ -14,6 +20,13 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Inject SERVER_URL vào BuildConfig
+        buildConfigField(
+            "String",
+            "SERVER_URL",
+            "\"${localProps.getProperty("server.url", "http://10.0.2.2:8080/api/")}\""
+        )
     }
 
     buildTypes {
@@ -25,9 +38,15 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    // Bật BuildConfig
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -38,7 +57,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.swiperefreshlayout)
 
-    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")

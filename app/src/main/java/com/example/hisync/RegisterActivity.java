@@ -73,7 +73,16 @@ public class RegisterActivity extends AppCompatActivity {
                         btnRegister.setEnabled(true);
                         if (response.isSuccessful() && response.body() != null) {
                             saveSession(response.body());
-                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+
+                            // Check xem đã xem onboarding chưa
+                            boolean onboardingDone = getSharedPreferences("hisync", MODE_PRIVATE)
+                                    .getBoolean("onboarding_done", false);
+
+                            Intent next = onboardingDone
+                                    ? new Intent(RegisterActivity.this, MainActivity.class)
+                                    : new Intent(RegisterActivity.this, OnboardingActivity.class);
+
+                            startActivity(next);
                             finishAffinity();
                         } else {
                             tilEmail.setError("Registration failed — email may already exist");

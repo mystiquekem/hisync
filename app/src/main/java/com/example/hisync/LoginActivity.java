@@ -20,6 +20,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.hisync.dto.BandResponse;
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputLayout tilEmail, tilPassword;
@@ -49,14 +52,16 @@ public class LoginActivity extends AppCompatActivity {
         etEmail     = findViewById(R.id.etEmail);
         etPassword  = findViewById(R.id.etPassword);
         btnSignIn   = findViewById(R.id.btnSignIn);
-        // btnGoogleSignIn đã bỏ — giữ nguyên XML nhưng không gán listener
-        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvSignUp    = findViewById(R.id.tvSignUp);
 
-        // Ẩn nút Google vì không còn dùng
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvForgotPassword.setVisibility(android.view.View.VISIBLE);
+        tvForgotPassword.setOnClickListener(v ->
+                startActivity(new Intent(this, ForgotPasswordActivity.class))
+        );
+
         MaterialButton btnGoogle = findViewById(R.id.btnGoogleSignIn);
         if (btnGoogle != null) btnGoogle.setVisibility(android.view.View.GONE);
-        if (tvForgotPassword != null) tvForgotPassword.setVisibility(android.view.View.GONE);
     }
 
     private void setupClickListeners() {
@@ -93,11 +98,11 @@ public class LoginActivity extends AppCompatActivity {
                 .enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        setLoading(false);
                         if (response.isSuccessful() && response.body() != null) {
                             saveSession(response.body());
-                            navigateToMain();
+                            fetchBandThenNavigate(response.body().getUserId());
                         } else {
+                            setLoading(false);
                             tilPassword.setError("Email or password incorrect");
                         }
                     }
@@ -112,6 +117,39 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void fetchBandThenNavigate(long userId) {
+        RetrofitClient.getInstance().getApi()
+                .getMyBands(userId)
+                .enqueue(new Callback<List<BandResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<BandResponse>> call,
+                                           Response<List<BandResponse>> response) {
+                        setLoading(false);
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && !response.body().isEmpty()) {
+                            // User đã có band → lưu band đầu tiên và vào thẳng MainActivity
+                            long bandId = response.body().get(0).getId();
+                            getSharedPreferences("hisync", MODE_PRIVATE).edit()
+                                    .putLong("bandId", bandId)
+                                    .putString("bandName", response.body().get(0).getName())
+                                    .apply();
+                            navigateToMain();
+                        } else {
+                            // Chưa có band → BandSetupActivity
+                            startActivity(new Intent(LoginActivity.this, BandSetupActivity.class));
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<BandResponse>> call, Throwable t) {
+                        setLoading(false);
+                        // Network lỗi → vào thẳng main, xử lý sau
+                        navigateToMain();
+                    }
+                });
+    }
     private void saveSession(LoginResponse body) {
         getSharedPreferences("hisync", MODE_PRIVATE).edit()
                 .putLong("userId", body.getUserId())
@@ -126,7 +164,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToMain() {
-        startActivity(new Intent(this, MainActivity.class));
+        long bandId = getSharedPreferences("hisync", MODE_PRIVATE).getLong("bandId", -1);
+        Intent intent = bandId == -1
+                ? new Intent(this, BandSetupActivity.class)
+                : new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
+
+
 }

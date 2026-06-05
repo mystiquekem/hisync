@@ -64,6 +64,11 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
+    // Glide (load thumbnail YouTube)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+// Cloudinary Android SDK
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

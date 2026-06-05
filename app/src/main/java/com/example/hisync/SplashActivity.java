@@ -8,36 +8,66 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hisync.api.RetrofitClient;
+import com.example.hisync.dto.BandResponse;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int MIN_DURATION = 2000; // 2 seconds minimum
+    private static final int MIN_DURATION = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        long startTime = System.currentTimeMillis();
-
-        // Check login state
         SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
         long userId = prefs.getLong("userId", -1);
 
-        // Calculate remaining wait time
-        long elapsed = System.currentTimeMillis() - startTime;
-        long delay = Math.max(0, MIN_DURATION - elapsed);
-
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent;
-            if (userId != -1) {
-                // Already logged in → go straight to MainActivity
-                intent = new Intent(this, MainActivity.class);
+            if (userId == -1) {
+                // Chưa login
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
             } else {
-                // Not logged in → go to Login
-                intent = new Intent(this, LoginActivity.class);
+                // Đã login → fetch band
+                fetchBandThenNavigate(userId);
             }
-            startActivity(intent);
-            finish();
-        }, delay);
+        }, MIN_DURATION);
+    }
+
+    private void fetchBandThenNavigate(long userId) {
+        RetrofitClient.getInstance().getApi()
+                .getMyBands(userId)
+                .enqueue(new Callback<List<BandResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<BandResponse>> call,
+                                           Response<List<BandResponse>> response) {
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && !response.body().isEmpty()) {
+                            getSharedPreferences("hisync", MODE_PRIVATE).edit()
+                                    .putLong("bandId", response.body().get(0).getId())
+                                    .putString("bandName", response.body().get(0).getName())
+                                    .apply();
+                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        } else {
+                            startActivity(new Intent(SplashActivity.this, BandSetupActivity.class));
+                        }
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<BandResponse>> call, Throwable t) {
+                        // Network lỗi → vào thẳng main
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        finish();
+                    }
+                });
     }
 }

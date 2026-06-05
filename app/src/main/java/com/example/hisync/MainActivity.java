@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.hisync.fragments.HomeFragment;
 import com.example.hisync.fragments.ProfileFragment;
 import com.example.hisync.fragments.ScheduleFragment;
+import com.example.hisync.fragments.SongsFragment;
 import com.example.hisync.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,9 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
 
     private static final int POS_HOME     = 0;
-    private static final int POS_SCHEDULE = 1;
-    private static final int POS_TASKS    = 2;
-    private static final int POS_PROFILE  = 3;
+    private static final int POS_SONGS    = 1;
+    private static final int POS_SCHEDULE = 2;
+    private static final int POS_TASKS    = 3;
+    private static final int POS_PROFILE  = 4;
 
     private final Deque<Integer> backStack = new ArrayDeque<>();
     private int currentPosition = POS_HOME;
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Kiểm tra session — thay FirebaseUser bằng SharedPreferences
         SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
         if (prefs.getLong("userId", -1) == -1) {
             startActivity(new Intent(this, LoginActivity.class));
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNav);
 
         viewPager.setAdapter(new MainPagerAdapter(this));
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.setUserInputEnabled(true);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -96,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** Gọi từ ProfileFragment hoặc HomeFragment khi user sign out */
     public void signOut() {
         getSharedPreferences("hisync", MODE_PRIVATE).edit().clear().apply();
         startActivity(new Intent(this, LoginActivity.class));
@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int positionForId(int id) {
+        if (id == R.id.nav_songs)    return POS_SONGS;
         if (id == R.id.nav_schedule) return POS_SCHEDULE;
         if (id == R.id.nav_tasks)    return POS_TASKS;
         if (id == R.id.nav_profile)  return POS_PROFILE;
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int idForPosition(int pos) {
+        if (pos == POS_SONGS)    return R.id.nav_songs;
         if (pos == POS_SCHEDULE) return R.id.nav_schedule;
         if (pos == POS_TASKS)    return R.id.nav_tasks;
         if (pos == POS_PROFILE)  return R.id.nav_profile;
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment createFragment(int position) {
             switch (position) {
+                case POS_SONGS:    return new SongsFragment();
                 case POS_SCHEDULE: return new ScheduleFragment();
                 case POS_TASKS:    return new TasksFragment();
                 case POS_PROFILE:  return new ProfileFragment();
@@ -145,6 +148,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() { return 4; }
+        public int getItemCount() { return 5; }
     }
 }

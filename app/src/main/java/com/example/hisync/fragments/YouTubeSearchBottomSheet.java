@@ -1,5 +1,6 @@
 package com.example.hisync.fragments;
 
+import com.example.hisync.BuildConfig;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class YouTubeSearchBottomSheet extends BottomSheetDialogFragment {
 
     private static final String ARG_BAND_ID = "band_id";
     private static final String ARG_USER_ID = "user_id";
-    private static final String YT_API_KEY  = "AIzaSyDOGSfb1nZrunKaKuL9eZpuq_Ajaqn1ctA";
+    private static final String YT_API_KEY = BuildConfig.YOUTUBE_API_KEY;
 
     private long bandId, userId;
     private Runnable onSongAdded;

@@ -4,8 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_primary"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_primary">
+
+    <View
+        android:id="@+id/statusBarSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/bg_primary"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
@@ -16,14 +21,13 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@color/bg_surface"
         app:itemIconSize="20dp"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/nav_selector"
         app:itemTextColor="@color/nav_selector"
         app:itemTextAppearanceActive="@style/NavTextStyle"
-        app:itemTextAppearanceInactive="@style/NavTextStyle"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:itemTextAppearanceInactive="@style/NavTextStyle"/>
 
 </LinearLayout>

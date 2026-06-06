@@ -46,6 +46,9 @@
 
         <activity android:name=".ForgotPasswordActivity"/>
 
+        <activity android:name=".EditProfileActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>

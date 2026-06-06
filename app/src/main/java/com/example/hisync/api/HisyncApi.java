@@ -84,4 +84,10 @@ public interface HisyncApi {
 
     @POST("auth/reset-password")
     Call<Void> resetPassword(@Body Map<String, String> body);
+
+    @PATCH("users/{id}")
+    Call<LoginResponse> updateProfile(
+            @Path("id") long userId,
+            @Body Map<String, String> body
+    );
 }

@@ -186,4 +186,14 @@ public class HomeFragment extends Fragment {
         else                                dot.setBackgroundResource(R.drawable.dot_purple);
         layoutTasks.addView(row);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE);
+        displayName = prefs.getString("displayName", "");
+        email       = prefs.getString("email", "");
+        populateHeader();
+    }
 }

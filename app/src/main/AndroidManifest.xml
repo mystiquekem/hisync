@@ -49,6 +49,8 @@
         <activity android:name=".EditProfileActivity"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity android:name=".UsernameSetupActivity"/>
+
     </application>
 
 </manifest>

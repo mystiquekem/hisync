@@ -1,53 +1,377 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:padding="24dp"
     android:background="@color/bg_primary">
 
-    <Space android:layout_width="wrap_content" android:layout_height="40dp"/>
-
-    <TextView
-        android:id="@+id/tvProfileAvatar"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_avatar"
-        android:text="?"/>
-
-    <TextView
-        android:id="@+id/tvProfileName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:id="@+id/tvProfileEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:textColor="@color/text_tertiary"
-        android:layout_marginTop="4dp"/>
-
-    <Space android:layout_width="wrap_content" android:layout_height="40dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnProfileSignOut"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="Sign Out"
-        android:textColor="@color/purple_primary"
-        app:strokeColor="@color/purple_primary"
-        app:cornerRadius="10dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <!-- ── HERO HEADER ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_accent"
+            android:paddingTop="24dp"
+            android:paddingBottom="20dp"
+            android:paddingHorizontal="20dp">
+
+            <!-- Avatar + Edit row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+
+                <!-- Avatar circle -->
+                <TextView
+                    android:id="@+id/tvProfileAvatar"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:gravity="center"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_avatar"
+                    android:text="?"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <!-- Edit button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditProfile"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="Edit"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    app:strokeColor="@color/divider"
+                    app:cornerRadius="20dp"
+                    app:strokeWidth="1dp"/>
+
+            </LinearLayout>
+
+            <!-- Name + role badge -->
+            <TextView
+                android:id="@+id/tvProfileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tvProfileEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_tertiary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" · "
+                    android:textSize="12sp"
+                    android:textColor="@color/text_tertiary"/>
+
+                <TextView
+                    android:id="@+id/tvProfileRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/purple_primary"
+                    android:background="@drawable/bg_role_member"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"/>
+
+            </LinearLayout>
+
+            <!-- Band name row -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎸 "
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tvProfileBand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ── STATS ROW ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:background="@color/bg_surface">
+
+            <!-- Sessions -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/tvStatSessions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sessions"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+            <View android:layout_width="0.5dp" android:layout_height="24dp"
+                android:background="@color/divider" android:layout_gravity="center_vertical"/>
+
+            <!-- Tasks done -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/tvStatTasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tasks done"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+            <View android:layout_width="0.5dp" android:layout_height="24dp"
+                android:background="@color/divider" android:layout_gravity="center_vertical"/>
+
+            <!-- Band members -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/tvStatMembers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bandmates"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ── MENU SECTIONS ── -->
+
+        <!-- Account -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ACCOUNT"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_tertiary"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_marginHorizontal="12dp">
+
+            <LinearLayout
+                android:id="@+id/itemEditProfile"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="✏️" android:textSize="16sp" android:layout_marginEnd="14dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Edit profile"
+                    android:textSize="14sp" android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="›" android:textSize="22sp" android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                android:background="@color/divider" android:layout_marginStart="46dp"/>
+
+            <LinearLayout
+                android:id="@+id/itemChangePassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🔑" android:textSize="16sp" android:layout_marginEnd="14dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Change password"
+                    android:textSize="14sp" android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="›" android:textSize="22sp" android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Band -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BAND"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_tertiary"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_marginHorizontal="12dp">
+
+            <LinearLayout
+                android:id="@+id/itemBandInfo"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🎸" android:textSize="16sp" android:layout_marginEnd="14dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Band info"
+                    android:textSize="14sp" android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="›" android:textSize="22sp" android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                android:background="@color/divider" android:layout_marginStart="46dp"/>
+
+            <LinearLayout
+                android:id="@+id/itemInviteCode"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🔗" android:textSize="16sp" android:layout_marginEnd="14dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Copy invite code"
+                    android:textSize="14sp" android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="›" android:textSize="22sp" android:textColor="@color/text_tertiary"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Sign out -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SESSION"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_tertiary"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="40dp">
+
+            <LinearLayout
+                android:id="@+id/itemSignOut"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🚪" android:textSize="16sp" android:layout_marginEnd="14dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Sign out"
+                    android:textSize="14sp" android:textColor="#E74C3C"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

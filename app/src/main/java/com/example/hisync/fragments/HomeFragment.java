@@ -40,6 +40,11 @@ public class HomeFragment extends Fragment {
     private long userId;
     private String displayName, email;
 
+    // thêm field
+    private TextView tvRoleBadge, tvBandName;
+    private String userRole, bandName;
+
+
     private static final DateTimeFormatter API_FMT  =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     private static final DateTimeFormatter SHOW_FMT =
@@ -62,11 +67,15 @@ public class HomeFragment extends Fragment {
         userId      = prefs.getLong("userId", -1);
         displayName = prefs.getString("displayName", "");
         email       = prefs.getString("email", "");
+        // trong onViewCreated, thêm:
+        userRole = prefs.getString("role", "member");
+        bandName = prefs.getString("bandName", "");
+        tvRoleBadge = view.findViewById(R.id.tvRoleBadge);
+        tvBandName  = view.findViewById(R.id.tvBandName);
 
         swipeRefresh    = view.findViewById(R.id.swipeRefresh);
         tvAvatar        = view.findViewById(R.id.tvAvatar);
         tvUserName      = view.findViewById(R.id.tvUserName);
-        tvUserEmail     = view.findViewById(R.id.tvUserEmail);
         tvSessionDate   = view.findViewById(R.id.tvSessionDate);
         tvSessionSong   = view.findViewById(R.id.tvSessionSong);
         cardNextSession = view.findViewById(R.id.cardNextSession);
@@ -74,8 +83,6 @@ public class HomeFragment extends Fragment {
         tvEmptySession  = view.findViewById(R.id.tvEmptySession);
         tvEmptyTasks    = view.findViewById(R.id.tvEmptyTasks);
 
-        MaterialButton btnSignOut = view.findViewById(R.id.btnSignOut);
-        btnSignOut.setOnClickListener(v -> ((MainActivity) requireActivity()).signOut());
 
         swipeRefresh.setColorSchemeResources(R.color.purple_primary);
         swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.bg_surface);
@@ -89,10 +96,19 @@ public class HomeFragment extends Fragment {
         String name = (displayName != null && !displayName.isEmpty())
                 ? displayName : email.split("@")[0];
         tvUserName.setText(name);
-        tvUserEmail.setText(email);
         tvAvatar.setText(name.isEmpty() ? "?" : String.valueOf(name.charAt(0)).toUpperCase());
-    }
 
+        // role badge
+        boolean isLeader = "leader".equals(userRole) || "admin".equals(userRole);
+        tvRoleBadge.setText(isLeader ? "Leader" : "Member");
+        tvRoleBadge.setBackgroundResource(isLeader
+                ? R.drawable.bg_role_leader : R.drawable.bg_role_member);
+        tvRoleBadge.setTextColor(requireContext().getColor(
+                isLeader ? android.R.color.holo_orange_dark : R.color.purple_primary));
+
+        // band name
+        tvBandName.setText(bandName != null && !bandName.isEmpty() ? bandName : "No band");
+    }
     private void loadData() {
         loadNextSession();
         loadTasks();

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    android:background="@drawable/bg_card"
+    android:layout_marginBottom="6dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvManageTaskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
+
+        <TextView
+            android:id="@+id/tvManageTaskAssignee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/text_tertiary"
+            android:layout_marginTop="2dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvManageTaskStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
+        android:layout_marginEnd="8dp"/>
+
+    <ImageView
+        android:id="@+id/btnEditTask"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@android:drawable/ic_menu_edit"
+        android:padding="4dp"
+        android:layout_marginEnd="4dp"/>
+
+    <ImageView
+        android:id="@+id/btnDeleteTask"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="#EC7063"
+        android:padding="4dp"/>
+
+</LinearLayout>

@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.hisync.R;
 import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.TaskResponse;
+import com.example.hisync.fragments.TaskDetailBottomSheet;
 
 import java.util.List;
 
@@ -72,19 +73,37 @@ public class TasksFragment extends Fragment {
                         if (response.body() == null) return;
 
                         for (TaskResponse task : response.body()) {
-                            boolean isDone = "done".equals(task.getStatus());
+                            boolean isDone = "approved".equals(task.getStatus());
                             LinearLayout target = isDone ? layoutDone : layoutPending;
                             View row = LayoutInflater.from(requireContext())
                                     .inflate(R.layout.item_task_row, target, false);
+
                             ((TextView) row.findViewById(R.id.tvTaskTitle))
                                     .setText(task.getTitle() != null ? task.getTitle() : "Task");
+
                             View dot = row.findViewById(R.id.viewTaskDot);
-                            if (isDone)
-                                dot.setBackgroundResource(R.drawable.dot_green);
-                            else if ("rerecord".equals(task.getStatus()))
-                                dot.setBackgroundResource(R.drawable.dot_amber);
-                            else
-                                dot.setBackgroundResource(R.drawable.dot_purple);
+                            switch (task.getStatus()) {
+                                case "approved":
+                                    dot.setBackgroundResource(R.drawable.dot_green);
+                                    break;
+                                case "submitted":
+                                case "rerecord":
+                                    dot.setBackgroundResource(R.drawable.dot_amber);
+                                    break;
+                                default:
+                                    dot.setBackgroundResource(R.drawable.dot_purple);
+                                    break;
+                            }
+
+                            row.setOnClickListener(v -> {
+                                TaskDetailBottomSheet sheet = TaskDetailBottomSheet.newInstance(
+                                        task,
+                                        task.getSessionSong() != null ? task.getSessionSong() : "",
+                                        task.getSessionDate() != null ? task.getSessionDate() : ""
+                                );
+                                sheet.show(getParentFragmentManager(), "task_detail");
+                            });
+
                             target.addView(row);
                         }
                     }

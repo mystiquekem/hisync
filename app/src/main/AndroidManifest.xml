@@ -51,6 +51,8 @@
 
         <activity android:name=".UsernameSetupActivity"/>
 
+        <activity android:name=".InstrumentSetupActivity" />
+
     </application>
 
 </manifest>

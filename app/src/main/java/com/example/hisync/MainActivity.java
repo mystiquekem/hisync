@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,9 +20,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.hisync.fragments.BandFragment;
 import com.example.hisync.fragments.HomeFragment;
+import com.example.hisync.fragments.LineupsFragment;
 import com.example.hisync.fragments.ProfileFragment;
 import com.example.hisync.fragments.ScheduleFragment;
-import com.example.hisync.fragments.SongsFragment;
 import com.example.hisync.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -33,13 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
     private boolean isLeader;
 
-    private static final int POS_HOME     = 0;
-    private static final int POS_SONGS    = 1;
-    private static final int POS_SCHEDULE = 2;
-    private static final int POS_TASKS    = 3;
-    private static final int POS_BAND     = 4; // leader only
-    private static final int POS_PROFILE_LEADER = 5;
-    private static final int POS_PROFILE_MEMBER = 4;
+    // Leader positions: Home | Lineups | Schedule | Tasks | Band | Profile
+    private static final int POS_HOME = 0;
 
     private final Deque<Integer> backStack = new ArrayDeque<>();
     private int currentPosition = POS_HOME;
@@ -47,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Apply saved theme before setContentView
+        int savedTheme = getSharedPreferences("hisync", MODE_PRIVATE)
+                .getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedTheme);
+
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
@@ -59,16 +62,13 @@ public class MainActivity extends AppCompatActivity {
         String role = prefs.getString("role", "member");
         isLeader = "leader".equals(role) || "admin".equals(role);
 
-        // Edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-
         setContentView(R.layout.activity_main);
 
         View statusBarSpacer = findViewById(R.id.statusBarSpacer);
         viewPager = findViewById(R.id.viewPager);
         bottomNav = findViewById(R.id.bottomNav);
 
-        // Status bar spacer — matches status bar height exactly
         ViewCompat.setOnApplyWindowInsetsListener(statusBarSpacer, (v, insets) -> {
             int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
             ViewGroup.LayoutParams lp = v.getLayoutParams();
@@ -77,20 +77,28 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Bottom nav — padding grows with navigation bar so icons never overlap OneUI
         ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
             int bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
             v.setPadding(0, 0, 0, bottom);
             return insets;
         });
 
-        // Menu based on role
+        FrameLayout fragmentContainer = findViewById(R.id.fragmentContainer);
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (v, insets) -> {
+            int bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            v.setPadding(0, insets.getInsets(WindowInsetsCompat.Type.statusBars()).top, 0, 0);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.bottomMargin = 56 + bottom;
+            v.setLayoutParams(lp);
+            return insets;
+        });
+
         bottomNav.inflateMenu(isLeader
                 ? R.menu.bottom_nav_menu_leader
                 : R.menu.bottom_nav_menu);
 
         viewPager.setAdapter(new MainPagerAdapter(this, isLeader));
-        viewPager.setOffscreenPageLimit(isLeader ? 5 : 4);
+        viewPager.setOffscreenPageLimit(isLeader ? 5 : 3);
         viewPager.setUserInputEnabled(true);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -154,22 +162,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int positionForId(int id) {
-        if (id == R.id.nav_songs)    return POS_SONGS;
-        if (id == R.id.nav_schedule) return POS_SCHEDULE;
-        if (id == R.id.nav_tasks)    return POS_TASKS;
-        if (id == R.id.nav_band)     return POS_BAND;
-        if (id == R.id.nav_profile)  return isLeader ? POS_PROFILE_LEADER : POS_PROFILE_MEMBER;
-        return POS_HOME;
+        if (id == R.id.nav_home)     return 0;
+        if (id == R.id.nav_lineups)  return isLeader ? 1 : 0;
+        if (id == R.id.nav_schedule) return isLeader ? 2 : 1;
+        if (id == R.id.nav_tasks)    return isLeader ? 3 : 2;
+        if (id == R.id.nav_band)     return isLeader ? 4 : 0;
+        if (id == R.id.nav_profile)  return isLeader ? 5 : 3;
+        return 0;
     }
 
     private int idForPosition(int pos) {
-        if (pos == POS_SONGS)    return R.id.nav_songs;
-        if (pos == POS_SCHEDULE) return R.id.nav_schedule;
-        if (pos == POS_TASKS)    return R.id.nav_tasks;
-        if (isLeader && pos == POS_BAND)            return R.id.nav_band;
-        if (isLeader && pos == POS_PROFILE_LEADER)  return R.id.nav_profile;
-        if (!isLeader && pos == POS_PROFILE_MEMBER) return R.id.nav_profile;
-        return R.id.nav_home;
+        if (isLeader) {
+            switch (pos) {
+                case 1: return R.id.nav_lineups;
+                case 2: return R.id.nav_schedule;
+                case 3: return R.id.nav_tasks;
+                case 4: return R.id.nav_band;
+                case 5: return R.id.nav_profile;
+                default: return R.id.nav_home;
+            }
+        } else {
+            switch (pos) {
+                case 1: return R.id.nav_schedule;
+                case 2: return R.id.nav_tasks;
+                case 3: return R.id.nav_profile;
+                default: return R.id.nav_home;
+            }
+        }
     }
 
     private static class MainPagerAdapter extends FragmentStateAdapter {
@@ -185,27 +204,26 @@ public class MainActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             if (isLeader) {
                 switch (position) {
-                    case POS_SONGS:           return new SongsFragment();
-                    case POS_SCHEDULE:        return new ScheduleFragment();
-                    case POS_TASKS:           return new TasksFragment();
-                    case POS_BAND:            return new BandFragment();
-                    case POS_PROFILE_LEADER:  return new ProfileFragment();
-                    default:                  return new HomeFragment();
+                    case 1: return new LineupsFragment();
+                    case 2: return new ScheduleFragment();
+                    case 3: return new TasksFragment();
+                    case 4: return new BandFragment();
+                    case 5: return new ProfileFragment();
+                    default: return new HomeFragment();
                 }
             } else {
                 switch (position) {
-                    case POS_SONGS:           return new SongsFragment();
-                    case POS_SCHEDULE:        return new ScheduleFragment();
-                    case POS_TASKS:           return new TasksFragment();
-                    case POS_PROFILE_MEMBER:  return new ProfileFragment();
-                    default:                  return new HomeFragment();
+                    case 1: return new ScheduleFragment();
+                    case 2: return new TasksFragment();
+                    case 3: return new ProfileFragment();
+                    default: return new HomeFragment();
                 }
             }
         }
 
         @Override
         public int getItemCount() {
-            return isLeader ? 6 : 5;
+            return isLeader ? 6 : 4;
         }
     }
 }

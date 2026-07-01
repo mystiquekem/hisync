@@ -59,7 +59,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void saveProfile(String name) {
         btnSave.setEnabled(false);
-        Map<String, String> body = new HashMap<>();
+        Map<String, Object> body = new HashMap<>();
         body.put("displayName", name);
 
         RetrofitClient.getInstance().getApi()

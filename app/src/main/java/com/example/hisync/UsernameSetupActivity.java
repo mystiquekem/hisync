@@ -66,7 +66,7 @@ public class UsernameSetupActivity extends AppCompatActivity {
 
     private void saveUsername(String name) {
         btnContinue.setEnabled(false);
-        Map<String, String> body = new HashMap<>();
+        Map<String, Object> body = new HashMap<>();
         body.put("displayName", name);
 
         RetrofitClient.getInstance().getApi()

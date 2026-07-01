@@ -34,6 +34,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileFragment extends Fragment {
 
     private TextView tvStatSessions, tvStatTasks, tvStatMembers;
@@ -102,8 +108,7 @@ public class ProfileFragment extends Fragment {
                 startActivity(new Intent(requireContext(), ForgotPasswordActivity.class)));
 
         view.findViewById(R.id.itemBandInfo).setOnClickListener(v ->
-                Toast.makeText(requireContext(),
-                        "Band info — coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(requireContext(), "Band info — coming soon", Toast.LENGTH_SHORT).show());
 
         view.findViewById(R.id.itemInviteCode).setOnClickListener(v -> {
             if (inviteCode != null && !inviteCode.isEmpty()) {
@@ -157,6 +162,7 @@ public class ProfileFragment extends Fragment {
                     });
         }
 
+        // Band members + invite code
         if (bandId != -1) {
             RetrofitClient.getInstance().getApi()
                     .getBand(bandId)
@@ -175,6 +181,7 @@ public class ProfileFragment extends Fragment {
                     });
         }
 
+        // Sessions — dùng getSessions với range rộng
         tvStatSessions.setText("—");
     }
 }

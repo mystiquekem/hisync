@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.BandResponse;
@@ -23,6 +24,11 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply saved theme before setContentView
+        int savedTheme = getSharedPreferences("hisync", MODE_PRIVATE)
+                .getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
@@ -31,11 +37,9 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (userId == -1) {
-                // Chưa login
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             } else {
-                // Đã login → fetch band
                 fetchBandThenNavigate(userId);
             }
         }, MIN_DURATION);
@@ -48,26 +52,45 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<BandResponse>> call,
                                            Response<List<BandResponse>> response) {
+                        SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
+
                         if (response.isSuccessful()
                                 && response.body() != null
                                 && !response.body().isEmpty()) {
-                            getSharedPreferences("hisync", MODE_PRIVATE).edit()
+                            prefs.edit()
                                     .putLong("bandId", response.body().get(0).getId())
                                     .putString("bandName", response.body().get(0).getName())
                                     .apply();
-                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        } else {
-                            startActivity(new Intent(SplashActivity.this, BandSetupActivity.class));
                         }
+
+                        navigateAfterSplash(prefs);
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<List<BandResponse>> call, Throwable t) {
-                        // Network lỗi → vào thẳng main
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        navigateAfterSplash(getSharedPreferences("hisync", MODE_PRIVATE));
                         finish();
                     }
                 });
+    }
+
+    /**
+     * Routing priority:
+     * 1. No instruments saved → InstrumentSetupActivity
+     * 2. No band → BandSetupActivity
+     * 3. Otherwise → MainActivity
+     */
+    private void navigateAfterSplash(SharedPreferences prefs) {
+        String instruments = prefs.getString("instruments", "");
+        long bandId = prefs.getLong("bandId", -1);
+
+        if (instruments.isEmpty()) {
+            startActivity(new Intent(this, InstrumentSetupActivity.class));
+        } else if (bandId == -1) {
+            startActivity(new Intent(this, BandSetupActivity.class));
+        } else {
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 }

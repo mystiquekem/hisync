@@ -7,7 +7,7 @@
     android:background="@color/bg_primary">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshSongs"
+        android:id="@+id/swipeRefreshLineups"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,17 +24,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Setlist"
+                    android:text="Lineups"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvEmptySongs"
+                    android:id="@+id/tvEmptyLineups"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No songs yet. Leader can add songs from YouTube."
+                    android:text="No lineups yet. Tap + to create one."
                     android:textSize="13sp"
                     android:textColor="@color/text_tertiary"
                     android:gravity="center"
@@ -42,7 +42,7 @@
                     android:visibility="gone"/>
 
                 <LinearLayout
-                    android:id="@+id/layoutSongs"
+                    android:id="@+id/layoutLineups"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"/>
@@ -52,7 +52,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddSong"
+        android:id="@+id/fabAddLineup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

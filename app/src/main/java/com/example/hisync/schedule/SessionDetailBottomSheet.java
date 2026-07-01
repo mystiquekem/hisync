@@ -14,6 +14,7 @@ import com.example.hisync.R;
 import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.SessionResponse;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.example.hisync.dto.LineupMemberDto;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,7 +65,7 @@ public class SessionDetailBottomSheet extends BottomSheetDialogFragment {
 
                         // Members
                         if (session.getMembers() != null) {
-                            for (SessionResponse.MemberResponse m : session.getMembers()) {
+                            for (com.example.hisync.dto.LineupMemberDto m : session.getMembers()) {
                                 addMemberRow(layoutMembers,
                                         m.getInstrument() != null ? m.getInstrument() : "?",
                                         m.getDisplayName() != null ? m.getDisplayName() : "Unknown");

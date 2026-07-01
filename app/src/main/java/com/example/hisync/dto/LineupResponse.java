@@ -2,24 +2,20 @@ package com.example.hisync.dto;
 
 import java.util.List;
 
-public class SessionResponse {
+public class LineupResponse {
     private long id;
-    private long lineupId;
+    private long bandId;
     private String songTitle;
+    private String youtubeId;
     private String thumbnailUrl;
-    private String date;
-    private int durationMinutes;
     private String createdByName;
     private List<LineupMemberDto> members;
-    private List<TaskResponse> tasks;
 
     public long getId()                        { return id; }
-    public long getLineupId()                  { return lineupId; }
+    public long getBandId()                    { return bandId; }
     public String getSongTitle()               { return songTitle; }
+    public String getYoutubeId()               { return youtubeId; }
     public String getThumbnailUrl()            { return thumbnailUrl; }
-    public String getDate()                    { return date; }
-    public int getDurationMinutes()            { return durationMinutes; }
     public String getCreatedByName()           { return createdByName; }
     public List<LineupMemberDto> getMembers()  { return members; }
-    public List<TaskResponse> getTasks()       { return tasks; }
 }

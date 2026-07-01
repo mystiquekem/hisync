@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.hisync.EditProfileActivity;
@@ -25,6 +26,13 @@ import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.BandResponse;
 import com.example.hisync.dto.TaskResponse;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.List;
 
@@ -56,8 +64,8 @@ public class ProfileFragment extends Fragment {
         String displayName = prefs.getString("displayName", "");
         String email       = prefs.getString("email", "");
         String role        = prefs.getString("role", "member");
-        userId  = prefs.getLong("userId", -1);
-        bandId  = prefs.getLong("bandId", -1);
+        userId   = prefs.getLong("userId", -1);
+        bandId   = prefs.getLong("bandId", -1);
         bandName = prefs.getString("bandName", "");
 
         String name = (displayName != null && !displayName.isEmpty())
@@ -92,7 +100,7 @@ public class ProfileFragment extends Fragment {
                 .setOnClickListener(v ->
                         startActivity(new Intent(requireContext(), EditProfileActivity.class)));
 
-        // Menu
+        // Menu items
         view.findViewById(R.id.itemEditProfile).setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), EditProfileActivity.class)));
 
@@ -107,18 +115,36 @@ public class ProfileFragment extends Fragment {
                 ClipboardManager cm = (ClipboardManager)
                         requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 cm.setPrimaryClip(ClipData.newPlainText("invite_code", inviteCode));
-                Toast.makeText(requireContext(), "Invite code copied!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(),
+                        "Invite code copied!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(requireContext(), "No invite code available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(),
+                        "No invite code available", Toast.LENGTH_SHORT).show();
             }
         });
 
         view.findViewById(R.id.itemSignOut).setOnClickListener(v ->
                 ((MainActivity) requireActivity()).signOut());
+
+        // Theme toggle
+        SwitchMaterial switchDarkMode = view.findViewById(R.id.switchDarkMode);
+        int currentMode = requireContext()
+                .getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE)
+                .getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        switchDarkMode.setChecked(currentMode == AppCompatDelegate.MODE_NIGHT_YES);
+        switchDarkMode.setOnCheckedChangeListener((btn, isChecked) -> {
+            int mode = isChecked
+                    ? AppCompatDelegate.MODE_NIGHT_YES
+                    : AppCompatDelegate.MODE_NIGHT_NO;
+            requireContext().getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE)
+                    .edit()
+                    .putInt("theme_mode", mode)
+                    .apply();
+            AppCompatDelegate.setDefaultNightMode(mode);
+        });
     }
 
     private void loadStats() {
-        // Tasks done
         if (userId != -1) {
             RetrofitClient.getInstance().getApi()
                     .getTasks(userId)
@@ -128,7 +154,7 @@ public class ProfileFragment extends Fragment {
                                                Response<List<TaskResponse>> response) {
                             if (!isAdded() || response.body() == null) return;
                             long done = response.body().stream()
-                                    .filter(t -> "done".equals(t.getStatus())).count();
+                                    .filter(t -> "approved".equals(t.getStatus())).count();
                             tvStatTasks.setText(String.valueOf(done));
                         }
                         @Override

@@ -119,7 +119,7 @@ public class HomeFragment extends Fragment {
         String to   = LocalDate.now().plusDays(30).atStartOfDay().format(API_FMT);
 
         RetrofitClient.getInstance().getApi()
-                .getSessions(userId, from, to)
+                .getSessionsByUser(userId, from, to)
                 .enqueue(new Callback<List<SessionResponse>>() {
                     @Override
                     public void onResponse(Call<List<SessionResponse>> call,
@@ -181,9 +181,19 @@ public class HomeFragment extends Fragment {
                 .inflate(R.layout.item_task_row, layoutTasks, false);
         ((TextView) row.findViewById(R.id.tvTaskTitle)).setText(title);
         View dot = row.findViewById(R.id.viewTaskDot);
-        if ("done".equals(status))          dot.setBackgroundResource(R.drawable.dot_green);
+        if ("approved".equals(status))          dot.setBackgroundResource(R.drawable.dot_green);
         else if ("rerecord".equals(status)) dot.setBackgroundResource(R.drawable.dot_amber);
         else                                dot.setBackgroundResource(R.drawable.dot_purple);
         layoutTasks.addView(row);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("hisync", AppCompatActivity.MODE_PRIVATE);
+        displayName = prefs.getString("displayName", "");
+        email       = prefs.getString("email", "");
+        populateHeader();
     }
 }

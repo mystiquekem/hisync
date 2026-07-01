@@ -10,18 +10,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hisync.api.RetrofitClient;
+import com.example.hisync.dto.BandResponse;
 import com.example.hisync.dto.LoginRequest;
 import com.example.hisync.dto.LoginResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.example.hisync.dto.BandResponse;
-import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -34,10 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Nếu đã login rồi thì vào thẳng MainActivity
         SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
         if (prefs.getLong("userId", -1) != -1) {
-            navigateToMain();
+            navigateAfterLogin(prefs);
             return;
         }
 
@@ -57,8 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvForgotPassword.setVisibility(android.view.View.VISIBLE);
         tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(this, ForgotPasswordActivity.class))
-        );
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
 
         MaterialButton btnGoogle = findViewById(R.id.btnGoogleSignIn);
         if (btnGoogle != null) btnGoogle.setVisibility(android.view.View.GONE);
@@ -72,8 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         tvSignUp.setOnClickListener(v ->
-                startActivity(new Intent(this, RegisterActivity.class))
-        );
+                startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private boolean validateInputs(String email, String password) {
@@ -125,52 +122,60 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<List<BandResponse>> call,
                                            Response<List<BandResponse>> response) {
                         setLoading(false);
+                        SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
+
                         if (response.isSuccessful()
                                 && response.body() != null
                                 && !response.body().isEmpty()) {
-                            // User đã có band → lưu band đầu tiên và vào thẳng MainActivity
-                            long bandId = response.body().get(0).getId();
-                            getSharedPreferences("hisync", MODE_PRIVATE).edit()
-                                    .putLong("bandId", bandId)
+                            prefs.edit()
+                                    .putLong("bandId", response.body().get(0).getId())
                                     .putString("bandName", response.body().get(0).getName())
                                     .apply();
-                            navigateToMain();
-                        } else {
-                            // Chưa có band → BandSetupActivity
-                            startActivity(new Intent(LoginActivity.this, BandSetupActivity.class));
-                            finish();
                         }
+
+                        navigateAfterLogin(prefs);
                     }
 
                     @Override
                     public void onFailure(Call<List<BandResponse>> call, Throwable t) {
                         setLoading(false);
-                        // Network lỗi → vào thẳng main, xử lý sau
-                        navigateToMain();
+                        navigateAfterLogin(getSharedPreferences("hisync", MODE_PRIVATE));
                     }
                 });
     }
+
     private void saveSession(LoginResponse body) {
+        List<String> instruments = body.getInstruments();
+        String instrumentsCsv = (instruments != null && !instruments.isEmpty())
+                ? android.text.TextUtils.join(",", instruments)
+                : "";
+
         getSharedPreferences("hisync", MODE_PRIVATE).edit()
                 .putLong("userId", body.getUserId())
                 .putString("displayName", body.getDisplayName())
                 .putString("email", body.getEmail())
                 .putString("role", body.getRole())
+                .putString("instruments", instrumentsCsv)
                 .apply();
+    }
+
+    private void navigateAfterLogin(SharedPreferences prefs) {
+        String instruments = prefs.getString("instruments", "");
+        long bandId = prefs.getLong("bandId", -1);
+
+        Intent next;
+        if (instruments.isEmpty()) {
+            next = new Intent(this, InstrumentSetupActivity.class);
+        } else if (bandId == -1) {
+            next = new Intent(this, BandSetupActivity.class);
+        } else {
+            next = new Intent(this, MainActivity.class);
+        }
+        startActivity(next);
+        finish();
     }
 
     private void setLoading(boolean loading) {
         btnSignIn.setEnabled(!loading);
     }
-
-    private void navigateToMain() {
-        long bandId = getSharedPreferences("hisync", MODE_PRIVATE).getLong("bandId", -1);
-        Intent intent = bandId == -1
-                ? new Intent(this, BandSetupActivity.class)
-                : new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-
 }

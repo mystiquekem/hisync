@@ -101,7 +101,7 @@ public class WeekFragment extends Fragment {
         String to   = weekStart.plusDays(7).atStartOfDay().format(API_FMT);
 
         RetrofitClient.getInstance().getApi()
-                .getSessions(currentUserId, from, to)
+                .getSessionsByUser(currentUserId, from, to)
                 .enqueue(new Callback<List<SessionResponse>>() {
                     @Override
                     public void onResponse(Call<List<SessionResponse>> call,

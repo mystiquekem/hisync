@@ -15,6 +15,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,16 +75,9 @@ public class RegisterActivity extends AppCompatActivity {
                         btnRegister.setEnabled(true);
                         if (response.isSuccessful() && response.body() != null) {
                             saveSession(response.body());
-
-                            // Check xem đã xem onboarding chưa
-                            boolean onboardingDone = getSharedPreferences("hisync", MODE_PRIVATE)
-                                    .getBoolean("onboarding_done", false);
-
-                            Intent next = onboardingDone
-                                    ? new Intent(RegisterActivity.this, MainActivity.class)
-                                    : new Intent(RegisterActivity.this, OnboardingActivity.class);
-
-                            startActivity(next);
+                            // New users always go to instrument setup first
+                            startActivity(new Intent(RegisterActivity.this,
+                                    InstrumentSetupActivity.class));
                             finishAffinity();
                         } else {
                             tilEmail.setError("Registration failed — email may already exist");
@@ -98,11 +93,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveSession(LoginResponse body) {
+        List<String> instruments = body.getInstruments();
+        String instrumentsCsv = (instruments != null && !instruments.isEmpty())
+                ? android.text.TextUtils.join(",", instruments)
+                : "";
+
         getSharedPreferences("hisync", MODE_PRIVATE).edit()
                 .putLong("userId", body.getUserId())
                 .putString("displayName", body.getDisplayName())
                 .putString("email", body.getEmail())
                 .putString("role", body.getRole())
+                .putString("instruments", instrumentsCsv)
                 .apply();
     }
 }

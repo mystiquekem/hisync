@@ -22,6 +22,8 @@ import com.example.hisync.R;
 import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.BandResponse;
 import com.google.android.material.button.MaterialButton;
+import com.example.hisync.fragments.CreateSessionBottomSheet;
+import com.example.hisync.fragments.ManageTasksFragment;
 
 import java.util.List;
 
@@ -64,10 +66,22 @@ public class BandFragment extends Fragment {
         btnCopyCode   = view.findViewById(R.id.btnCopyCode);
 
         // Quick actions
-        view.findViewById(R.id.btnNewSession).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Create session — coming soon", Toast.LENGTH_SHORT).show());
-        view.findViewById(R.id.btnManageTasks).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Manage tasks — coming soon", Toast.LENGTH_SHORT).show());
+        // Quick actions — replace the Toast for btnNewSession only
+        view.findViewById(R.id.btnNewSession).setOnClickListener(v -> {
+            CreateSessionBottomSheet sheet =
+                    CreateSessionBottomSheet.newInstance(bandId, userId);
+            sheet.show(getParentFragmentManager(), "create_session");
+        });
+        view.findViewById(R.id.btnManageTasks).setOnClickListener(v -> {
+            // Show the overlay container
+            requireActivity().findViewById(R.id.fragmentContainer)
+                    .setVisibility(View.VISIBLE);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new ManageTasksFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
         view.findViewById(R.id.btnSubmissions).setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Review submissions — coming soon", Toast.LENGTH_SHORT).show());
         view.findViewById(R.id.btnBandSettings).setOnClickListener(v ->

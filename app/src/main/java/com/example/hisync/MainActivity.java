@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void navigateTo(int position) {
+    public void navigateTo(int position) {
         pushBackStack(currentPosition);
         currentPosition = position;
         isNavigatingProgrammatically = true;

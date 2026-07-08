@@ -4,22 +4,54 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="10dp"
+    android:padding="12dp"
     android:background="@drawable/bg_card"
-    android:layout_marginBottom="6dp">
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true">
 
     <View
         android:id="@+id/viewTaskDot"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
         android:background="@drawable/dot_purple"
         android:layout_marginEnd="12dp"/>
 
-    <TextView
-        android:id="@+id/tvTaskTitle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="14sp"
-        android:textColor="@color/text_primary"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTaskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tvTaskAssignee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/text_tertiary"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTaskStatusPill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
+        android:visibility="gone"/>
+
 </LinearLayout>

@@ -138,16 +138,4 @@ public interface HisyncApi {
             @Path("id") long taskId,
             @Body Map<String, String> body
     );
-
-    @POST("auth/forgot-password")
-    Call<Void> forgotPassword(@Body Map<String, String> body);
-
-    @POST("auth/reset-password")
-    Call<Void> resetPassword(@Body Map<String, String> body);
-
-    @PATCH("users/{id}")
-    Call<LoginResponse> updateProfile(
-            @Path("id") long userId,
-            @Body Map<String, String> body
-    );
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/bg_surface"
+    android:padding="20dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="@color/divider"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="REVIEW SUBMISSION"
+        android:textSize="10sp"
+        android:letterSpacing="0.12"
+        android:textColor="@color/text_tertiary"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvReviewTaskTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="4dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvReviewAssignee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" · "
+            android:textSize="13sp"
+            android:textColor="@color/text_tertiary"/>
+
+        <TextView
+            android:id="@+id/tvReviewSong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/purple_primary"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider"
+        android:layout_marginVertical="16dp"/>
+
+    <!-- Player -->
+    <LinearLayout
+        android:id="@+id/layoutReviewPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:padding="14dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RECORDING"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_tertiary"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progressBarReview"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/purple_primary"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"/>
+
+        <SeekBar
+            android:id="@+id/seekBarReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/purple_primary"
+            android:thumbTint="@color/purple_primary"
+            android:layout_marginBottom="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReviewPlay"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="▶ Play"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/purple_primary"
+            app:cornerRadius="10dp"/>
+
+    </LinearLayout>
+
+    <!-- Action buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRerecord"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="↩ Re-record"
+            android:textColor="#EF4B3C"
+            android:layout_marginEnd="8dp"
+            app:strokeColor="#EF4B3C"
+            app:cornerRadius="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApprove"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="✓ Approve"
+            android:textColor="@color/white"
+            app:backgroundTint="#4CAF50"
+            app:cornerRadius="12dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

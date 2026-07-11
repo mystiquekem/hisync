@@ -22,8 +22,6 @@ import com.example.hisync.R;
 import com.example.hisync.api.RetrofitClient;
 import com.example.hisync.dto.BandResponse;
 import com.google.android.material.button.MaterialButton;
-import com.example.hisync.fragments.CreateSessionBottomSheet;
-import com.example.hisync.fragments.ManageTasksFragment;
 
 import java.util.List;
 
@@ -38,8 +36,7 @@ public class BandFragment extends Fragment {
     private LinearLayout layoutMembers;
     private MaterialButton btnCopyCode;
 
-    private long bandId;
-    private long userId;
+    private long bandId, userId;
 
     @Nullable
     @Override
@@ -65,27 +62,18 @@ public class BandFragment extends Fragment {
         layoutMembers = view.findViewById(R.id.layoutMembers);
         btnCopyCode   = view.findViewById(R.id.btnCopyCode);
 
-        // Quick actions
-        // Quick actions — replace the Toast for btnNewSession only
+        // New session
         view.findViewById(R.id.btnNewSession).setOnClickListener(v -> {
             CreateSessionBottomSheet sheet =
                     CreateSessionBottomSheet.newInstance(bandId, userId);
             sheet.show(getParentFragmentManager(), "create_session");
         });
-        view.findViewById(R.id.btnManageTasks).setOnClickListener(v -> {
-            // Show the overlay container
-            requireActivity().findViewById(R.id.fragmentContainer)
-                    .setVisibility(View.VISIBLE);
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new ManageTasksFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
-        view.findViewById(R.id.btnSubmissions).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Review submissions — coming soon", Toast.LENGTH_SHORT).show());
+
+        // Band settings
         view.findViewById(R.id.btnBandSettings).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Band settings — coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(requireContext(),
+                        "Band settings — coming in Phase 6",
+                        Toast.LENGTH_SHORT).show());
 
         swipeRefresh.setColorSchemeResources(R.color.purple_primary);
         swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.bg_surface);
@@ -100,14 +88,14 @@ public class BandFragment extends Fragment {
                 .getBand(bandId)
                 .enqueue(new Callback<BandResponse>() {
                     @Override
-                    public void onResponse(Call<BandResponse> call, Response<BandResponse> response) {
+                    public void onResponse(Call<BandResponse> call,
+                                           Response<BandResponse> response) {
                         if (!isAdded()) return;
                         swipeRefresh.setRefreshing(false);
                         if (response.isSuccessful() && response.body() != null) {
                             bindBand(response.body());
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BandResponse> call, Throwable t) {
                         if (isAdded()) swipeRefresh.setRefreshing(false);
@@ -128,7 +116,8 @@ public class BandFragment extends Fragment {
                     requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setPrimaryClip(
                     ClipData.newPlainText("invite_code", band.getInviteCode()));
-            Toast.makeText(requireContext(), "Invite code copied!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(),
+                    "Invite code copied!", Toast.LENGTH_SHORT).show();
         });
 
         layoutMembers.removeAllViews();

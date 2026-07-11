@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/leaderActions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="-4dp"
+    android:layout_marginBottom="10dp"
+    android:paddingStart="12dp">
+
+    <TextView
+        android:id="@+id/btnEditSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:textSize="12sp"
+        android:textColor="@color/text_tertiary"
+        android:drawablePadding="4dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  ·  "
+        android:textSize="12sp"
+        android:textColor="@color/text_tertiary"/>
+
+    <TextView
+        android:id="@+id/btnCancelSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textSize="12sp"
+        android:textColor="@color/purple_primary"
+        android:clickable="true"
+        android:focusable="true"/>
+
+</LinearLayout>

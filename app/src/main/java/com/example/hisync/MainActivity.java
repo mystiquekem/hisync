@@ -22,7 +22,7 @@ import com.example.hisync.fragments.BandFragment;
 import com.example.hisync.fragments.HomeFragment;
 import com.example.hisync.fragments.LineupsFragment;
 import com.example.hisync.fragments.ProfileFragment;
-import com.example.hisync.fragments.ScheduleFragment;
+import com.example.hisync.schedule.ScheduleFragment;
 import com.example.hisync.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

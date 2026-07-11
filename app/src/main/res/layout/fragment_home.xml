@@ -39,161 +39,169 @@
                         android:layout_height="match_parent"
                         android:alpha="0.12"/>
 
-                    <!-- Top row: avatar + name + role -->
+                    <!-- Content wrapper: stacks vertically on top of the decoration -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/tvAvatar"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:gravity="center"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="#3D2000"
-                            android:background="@drawable/bg_avatar_amber"/>
-
+                        <!-- Top row: avatar + name + role -->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="12dp">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
 
                             <TextView
-                                android:id="@+id/tvUserName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="18sp"
+                                android:id="@+id/tvAvatar"
+                                android:layout_width="52dp"
+                                android:layout_height="52dp"
+                                android:gravity="center"
+                                android:textSize="20sp"
                                 android:textStyle="bold"
-                                android:textColor="#F5EDDB"/>
+                                android:textColor="#3D2000"
+                                android:background="@drawable/bg_avatar_amber"/>
 
-                            <TextView
-                                android:id="@+id/tvBandName"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textColor="#F5EDDB"
-                                android:alpha="0.75"
-                                android:text="—"/>
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="12dp">
 
-                        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/tvUserName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#F5EDDB"/>
 
-                        <TextView
-                            android:id="@+id/tvRoleBadge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            android:textColor="#7A2E10"
-                            android:background="@drawable/bg_badge_cream"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="Member"/>
+                                <TextView
+                                    android:id="@+id/tvBandName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="12sp"
+                                    android:textColor="#F5EDDB"
+                                    android:alpha="0.75"
+                                    android:text="—"/>
 
-                    </LinearLayout>
-
-                    <!-- Next session inner card -->
-                    <LinearLayout
-                        android:id="@+id/cardNextSession"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_session_inner"
-                        android:padding="12dp"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🎸"
-                            android:textSize="22sp"
-                            android:layout_marginEnd="10dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            </LinearLayout>
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="NEXT SESSION"
-                                android:textSize="9sp"
-                                android:letterSpacing="0.12"
-                                android:textColor="#F5EDDB"
-                                android:alpha="0.65"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:id="@+id/tvSessionSong"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                android:textColor="#F5EDDB"
-                                android:maxLines="1"
-                                android:ellipsize="end"/>
-
-                            <TextView
-                                android:id="@+id/tvSessionDate"
+                                android:id="@+id/tvRoleBadge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="11sp"
-                                android:textColor="#F5EDDB"
-                                android:alpha="0.7"/>
+                                android:textStyle="bold"
+                                android:textColor="#7A2E10"
+                                android:background="@drawable/bg_badge_cream"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="Member"/>
 
                         </LinearLayout>
 
-                        <!-- Days countdown chip -->
+                        <!-- Next session inner card -->
                         <LinearLayout
-                            android:id="@+id/layoutCountdown"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="@drawable/bg_amber_chip"
+                            android:id="@+id/cardNextSession"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_session_inner"
+                            android:padding="12dp"
                             android:visibility="gone">
 
                             <TextView
-                                android:id="@+id/tvDaysCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:textColor="#3D2000"/>
+                                android:text="🎸"
+                                android:textSize="22sp"
+                                android:layout_marginEnd="10dp"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="DAYS"
-                                android:textSize="7sp"
-                                android:textStyle="bold"
-                                android:textColor="#5C3A00"/>
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="NEXT SESSION"
+                                    android:textSize="9sp"
+                                    android:letterSpacing="0.12"
+                                    android:textColor="#F5EDDB"
+                                    android:alpha="0.65"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvSessionSong"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#F5EDDB"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+
+                                <TextView
+                                    android:id="@+id/tvSessionDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="11sp"
+                                    android:textColor="#F5EDDB"
+                                    android:alpha="0.7"/>
+
+                            </LinearLayout>
+
+                            <!-- Days countdown chip -->
+                            <LinearLayout
+                                android:id="@+id/layoutCountdown"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:background="@drawable/bg_amber_chip"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:id="@+id/tvDaysCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#3D2000"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DAYS"
+                                    android:textSize="7sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#5C3A00"/>
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                        <!-- Empty session state -->
+                        <TextView
+                            android:id="@+id/tvEmptySession"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No upcoming sessions"
+                            android:textSize="13sp"
+                            android:textColor="#F5EDDB"
+                            android:alpha="0.6"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_session_inner"
+                            android:visibility="gone"/>
 
-                    <!-- Empty session state -->
-                    <TextView
-                        android:id="@+id/tvEmptySession"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No upcoming sessions"
-                        android:textSize="13sp"
-                        android:textColor="#F5EDDB"
-                        android:alpha="0.6"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_session_inner"
-                        android:visibility="gone"/>
+                    </LinearLayout>
 
                 </FrameLayout>
             </androidx.cardview.widget.CardView>
@@ -520,4 +528,3 @@
     </androidx.core.widget.NestedScrollView>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-

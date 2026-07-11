@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
     private TextView tvSessionDate, tvSessionSong, tvEmptySession;
     private TextView tvStatSessions, tvStatTasks, tvStatMembers;
     private TextView tvProgressLabel, tvProgressEncourage;
-    private LinearLayout cardNextSession, layoutTasks, tvEmptyTasks;
+    private LinearLayout cardNextSession, layoutTasks;
     private LinearLayout layoutCountdown;
     private TextView tvDaysCount;
     private View viewProgressFill;
@@ -270,7 +270,6 @@ public class HomeFragment extends Fragment {
                         }
 
                         // Normal: show task rows
-                        tvEmptyTasks.setVisibility(View.GONE);
                         int delay = 0;
                         for (TaskResponse task : tasks) {
                             addTaskRow(task, delay);

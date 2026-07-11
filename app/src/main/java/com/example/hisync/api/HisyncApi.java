@@ -138,4 +138,7 @@ public interface HisyncApi {
             @Path("id") long taskId,
             @Body Map<String, String> body
     );
+
+    @GET("tasks/band/{bandId}/submissions")
+    Call<List<TaskResponse>> getSubmissions(@Path("bandId") long bandId);
 }

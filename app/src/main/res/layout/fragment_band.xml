@@ -126,7 +126,7 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- Quick actions -->
+            <!-- Quick actions — only Band Settings remains -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,123 +136,79 @@
                 android:textColor="@color/text_tertiary"
                 android:layout_marginBottom="10dp"/>
 
+            <!-- New Session -->
             <LinearLayout
+                android:id="@+id/btnNewSession"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true">
 
-                <LinearLayout
-                    android:id="@+id/btnNewSession"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📅"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="14dp"/>
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="14dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:text="New Session"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📅"
-                        android:textSize="22sp"
-                        android:layout_marginBottom="6dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="New session"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btnManageTasks"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="14dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:text="›"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_tertiary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✅"
-                        android:textSize="22sp"
-                        android:layout_marginBottom="6dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Manage tasks"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                </LinearLayout>
             </LinearLayout>
 
+            <!-- Band Settings -->
             <LinearLayout
+                android:id="@+id/btnBandSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true">
 
-                <LinearLayout
-                    android:id="@+id/btnSubmissions"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚙️"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="14dp"/>
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="14dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:text="Band Settings"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="▶️"
-                        android:textSize="22sp"
-                        android:layout_marginBottom="6dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Submissions"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btnBandSettings"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="14dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:text="›"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_tertiary"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="⚙️"
-                        android:textSize="22sp"
-                        android:layout_marginBottom="6dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Band settings"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

@@ -33,7 +33,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
@@ -84,7 +83,7 @@
         android:textColor="@color/text_primary"
         android:layout_marginBottom="20dp"/>
 
-    <!-- Audio player — only shown when recording exists -->
+    <!-- ── AUDIO PLAYER (submitted/approved) ── -->
     <LinearLayout
         android:id="@+id/layoutPlayer"
         android:layout_width="match_parent"
@@ -119,6 +118,71 @@
             android:textColor="@color/white"
             app:backgroundTint="@color/purple_primary"
             app:cornerRadius="10dp"/>
+
+    </LinearLayout>
+
+    <!-- ── UPLOAD SECTION (pending/rerecord) ── -->
+    <LinearLayout
+        android:id="@+id/layoutUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:padding="14dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SUBMIT RECORDING"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_tertiary"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Record live -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRecord"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="🎤 Record"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"
+            app:backgroundTint="#3A9BAD"
+            app:cornerRadius="10dp"/>
+
+        <!-- Or pick file -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPickFile"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="📁 Choose File"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="12dp"
+            app:strokeColor="@color/divider"
+            app:cornerRadius="10dp"/>
+
+        <!-- Status text -->
+        <TextView
+            android:id="@+id/tvUploadStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/text_tertiary"
+            android:gravity="center"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Submit button — hidden until file ready -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitRecording"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Submit"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:backgroundTint="#D4603A"
+            app:cornerRadius="12dp"/>
 
     </LinearLayout>
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dayChip"
+    android:layout_width="44dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingVertical="4dp"
+    android:layout_marginEnd="6dp">
+
+    <TextView
+        android:id="@+id/tvChipDow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:textColor="@color/text_tertiary"/>
+
+    <TextView
+        android:id="@+id/tvChipNum"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"/>
+
+    <View
+        android:id="@+id/dotHasSession"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/bg_dot_teal"
+        android:visibility="invisible"/>
+
+</LinearLayout>

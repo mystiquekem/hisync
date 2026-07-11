@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvDayEmpty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="No sessions this day"
+    android:textSize="13sp"
+    android:textColor="@color/text_tertiary"
+    android:gravity="center"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_day_empty"/>

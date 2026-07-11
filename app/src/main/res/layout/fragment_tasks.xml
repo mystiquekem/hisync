@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRefreshTasks"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,50 +13,211 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tasks"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="20dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="PENDING"
-                android:textSize="10sp"
-                android:letterSpacing="0.1"
-                android:textColor="@color/text_tertiary"
-                android:layout_marginBottom="10dp"/>
-
+            <!-- ── MEMBER VIEW ── -->
             <LinearLayout
-                android:id="@+id/layoutPendingTasks"
+                android:id="@+id/memberTasksView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp"/>
+                android:padding="16dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="COMPLETED"
-                android:textSize="10sp"
-                android:letterSpacing="0.1"
-                android:textColor="@color/text_tertiary"
-                android:layout_marginBottom="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tasks"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="20dp"/>
 
+                <!-- Pending -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PENDING"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_tertiary"
+                    android:layout_marginBottom="8dp"/>
+                <LinearLayout
+                    android:id="@+id/layoutPendingTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Submitted -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AWAITING APPROVAL"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="#F5A623"
+                    android:layout_marginBottom="8dp"/>
+                <LinearLayout
+                    android:id="@+id/layoutSubmittedTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Re-record -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="NEEDS RE-RECORD"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="#EF4B3C"
+                    android:layout_marginBottom="8dp"/>
+                <LinearLayout
+                    android:id="@+id/layoutRerecordTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Approved -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="APPROVED"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/green_accent"
+                    android:layout_marginBottom="8dp"/>
+                <LinearLayout
+                    android:id="@+id/layoutApprovedTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"/>
+
+            </LinearLayout>
+
+            <!-- ── LEADER VIEW ── -->
             <LinearLayout
-                android:id="@+id/layoutDoneTasks"
+                android:id="@+id/leaderTasksView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:paddingBottom="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tasks"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Toggle group -->
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleTaskGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true"
+                        app:selectionRequired="true"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnToggleManage"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="Manage"
+                            android:textSize="13sp"
+                            android:checked="true"
+                            app:strokeColor="@color/purple_primary"
+                            app:cornerRadius="8dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnToggleSubmissions"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="Submissions"
+                            android:textSize="13sp"
+                            app:strokeColor="@color/purple_primary"
+                            app:cornerRadius="8dp"/>
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                </LinearLayout>
+
+                <!-- Manage view -->
+                <LinearLayout
+                    android:id="@+id/viewManage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:paddingTop="0dp">
+
+                    <TextView
+                        android:id="@+id/tvManageEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No sessions yet. Create a session first."
+                        android:textSize="13sp"
+                        android:textColor="@color/text_tertiary"
+                        android:gravity="center"
+                        android:padding="32dp"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:id="@+id/layoutManageSessions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
+
+                <!-- Submissions view -->
+                <LinearLayout
+                    android:id="@+id/viewSubmissions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:paddingTop="0dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvSubmissionsEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No submissions yet."
+                        android:textSize="13sp"
+                        android:textColor="@color/text_tertiary"
+                        android:gravity="center"
+                        android:padding="32dp"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:id="@+id/layoutSubmissionsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

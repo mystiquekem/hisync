@@ -34,9 +34,12 @@ public class SplashActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("hisync", MODE_PRIVATE);
         long userId = prefs.getLong("userId", -1);
+        // Users who logged in before the backend required tokens have no token
+        // saved, so they must log in again.
+        boolean hasToken = prefs.getString("token", null) != null;
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (userId == -1) {
+            if (userId == -1 || !hasToken) {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             } else {

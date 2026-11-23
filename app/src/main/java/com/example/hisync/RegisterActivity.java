@@ -99,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                 : "";
 
         getSharedPreferences("hisync", MODE_PRIVATE).edit()
+                .putString("token", body.getToken())
                 .putLong("userId", body.getUserId())
                 .putString("displayName", body.getDisplayName())
                 .putString("email", body.getEmail())
